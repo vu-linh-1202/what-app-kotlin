@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "914513225185",
+    "project_id": "whatappkotlin",
+    "storage_bucket": "whatappkotlin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:914513225185:android:1f47084e1dec6e7d53dea0",
+        "android_client_info": {
+          "package_name": "com.nac.whatappkotlin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "914513225185-g7sc9vsr7p4v602dgar8711vaf6uhnda.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDASNX7qIcUS2gCEUeQn00HVONouLiid0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "914513225185-g7sc9vsr7p4v602dgar8711vaf6uhnda.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
