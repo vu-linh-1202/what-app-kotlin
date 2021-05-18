@@ -12,4 +12,5 @@
     <color name="chat_background">#787876</color>
     <color name="chat">#EFF4EF</color>
     <color name="sender">#538D97</color>
+    <color name="splash">#234342</color>
 </resources>
