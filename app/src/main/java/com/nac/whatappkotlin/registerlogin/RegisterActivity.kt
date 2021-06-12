@@ -8,15 +8,21 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.nac.whatappkotlin.R
 import com.nac.whatappkotlin.message.LatesMessageAct
+import com.nac.whatappkotlin.model.User
 import kotlinx.android.synthetic.main.activity_register.*
 import java.util.*
 
 class RegisterActivity : AppCompatActivity() {
+
+    companion object{
+        val TAG="RegisterActivity"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,8 +75,7 @@ class RegisterActivity : AppCompatActivity() {
             return
         }
 
-        Log.d("MainActivity", "Email is: " + email)
-        Log.d("MainActivity", "Password: $password")
+        Log.d(TAG,"Attempting to create user with email:$email")
 
         //Firebase Authentication to create a user with email and password
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
@@ -78,17 +83,13 @@ class RegisterActivity : AppCompatActivity() {
                 if (!it.isSuccessful) return@addOnCompleteListener
 
                 //else if successful
-                Log.d(
-                    "RegisterActivity",
-                    "Successful create user with uid: ${it.result?.user?.uid}"
-                )
+                Log.d(TAG, "Successful create user with uid: ${it.result?.user?.uid}")
 
                 upLoadImageToFirebaseStorage()
             }
             .addOnFailureListener {
                 Log.d("RegisterActivity", "Failed to create user: ${it.message}")
-                Toast.makeText(this, "Failed to create user: ${it.message}", Toast.LENGTH_LONG)
-                    .show()
+                Toast.makeText(this, "Failed to create user: ${it.message}", Toast.LENGTH_LONG).show()
             }
     }
 
@@ -98,17 +99,17 @@ class RegisterActivity : AppCompatActivity() {
         val ref = FirebaseStorage.getInstance().getReference("/image/$filename")
         ref.putFile(selectedPhotoUri!!)
             .addOnSuccessListener {
-                Log.d("RegisterActivity", "Successfully upload image: ${it.metadata?.path}")
+                Log.d(TAG, "Successfully upload image: ${it.metadata?.path}")
 
                 //get link image
                 ref.downloadUrl.addOnSuccessListener {
-                    Log.d("RegisterActivity", "File Location: $it")
+                    Log.d(TAG, "File Location: $it")
 
                     saveUserToFirebaseDatabase(it.toString())
                 }
             }
             .addOnFailureListener {
-                //do some logging here
+                Log.d(TAG, "Failed to uplaod image to storage:${it.message}")
             }
     }
 
@@ -119,16 +120,19 @@ class RegisterActivity : AppCompatActivity() {
         val users = User(uid, edt_name.text.toString(), profileImageUrl)
         ref.setValue(users)
             .addOnSuccessListener {
-                Log.d("RegisterActivity", " Finally we saved the user to Firebase Database")
+                Log.d(TAG, " Finally we saved the user to Firebase Database")
 
                 val intent = Intent(this, LatesMessageAct::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }
+            .addOnFailureListener{
+                Log.d(TAG, "Failed to set value to database: ${it.message}")
+            }
     }
 
-    class User(val uid: String?, val username: String?, val profileImageUrl: String?) {
-        constructor() : this("", "", "")
-
-    }
+//    class User(val uid: String?, val username: String?, val profileImageUrl: String?) {
+//        constructor() : this("", "", "")
+//
+//    }
 }

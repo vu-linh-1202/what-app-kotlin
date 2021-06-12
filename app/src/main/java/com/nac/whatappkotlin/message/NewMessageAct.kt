@@ -24,12 +24,6 @@ class NewMessageAct : AppCompatActivity() {
         setContentView(R.layout.activity_new_message)
 
         supportActionBar?.title = "Select User"
-//        val adapter = GroupAdapter<ViewHolder>()
-//        adapter.add(UserItem())
-//        adapter.add(UserItem())
-//        adapter.add(UserItem())
-//
-//        recyclerview_message.adapter = adapter
         fetchUsers()
     }
    companion object{
@@ -51,7 +45,6 @@ class NewMessageAct : AppCompatActivity() {
 
                         val userItem=item as UserItem
                         val intent = Intent(view.context, ChatLogAct::class.java)
-                        //intent.putExtra(USER_KEY,userItem.users.username)
                         intent.putExtra(USER_KEY,userItem.users)
                         startActivity(intent)
                         finish()

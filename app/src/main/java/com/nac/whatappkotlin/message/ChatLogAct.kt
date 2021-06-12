@@ -11,6 +11,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.nac.whatappkotlin.R
 import com.nac.whatappkotlin.model.ChatMessage
 import com.nac.whatappkotlin.model.User
+import com.nac.whatappkotlin.views.ChatFromItem
+import com.nac.whatappkotlin.views.ChatToItem
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
@@ -38,7 +40,6 @@ class ChatLogAct : AppCompatActivity() {
         if (toUser != null) {
             supportActionBar?.title = toUser?.uid
         }
-
 //        setupDummyData()
         listenForMessage()
 
@@ -56,6 +57,7 @@ class ChatLogAct : AppCompatActivity() {
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 val chatMessage = p0.getValue(ChatMessage::class.java)
+
                 if (chatMessage != null) {
                     Log.d(TAG, chatMessage.text)
 
@@ -66,6 +68,7 @@ class ChatLogAct : AppCompatActivity() {
                         adapter.add(ChatToItem(chatMessage.text, toUser!!))
                     }
                 }
+                recyclerview_chat_log.scrollToPosition(adapter.itemCount-1)
             }
 
             override fun onCancelled(p0: DatabaseError) {
@@ -86,53 +89,31 @@ class ChatLogAct : AppCompatActivity() {
     private fun performSendMessage() {
         //how to we actually send a message to firebase
         val text = editText_chat_log.text.toString()
-        val refer = FirebaseDatabase.getInstance().getReference("/messages").push()
+        //val refer = FirebaseDatabase.getInstance().getReference("/messages").push()
         val fromId = FirebaseAuth.getInstance().uid
         val user = intent.getParcelableExtra<User>(NewMessageAct.USER_KEY)
         val toId = user?.uid
 
         if (fromId == null) return
 
-        val chatMessage = ChatMessage(
-            refer.key!!, text, fromId, toId,
-            System.currentTimeMillis() / 1000
+        val toReference = FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").push()
+        val refer = FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/${toId}")
+        val chatMessage = ChatMessage(refer.key!!, text, fromId, toId, System.currentTimeMillis() / 1000
         )
+
         refer.setValue(chatMessage).addOnSuccessListener {
             Log.d(TAG, "Saved our chat message: ${refer.key}")
+            editText_chat_log.text.clear()
+            recyclerview_chat_log.scrollToPosition(adapter.itemCount-1)
         }
+        toReference.setValue(chatMessage)
+
+        val latesMessageRef= FirebaseDatabase.getInstance().getReference("lates-messsge/$fromId/$toId")
+        latesMessageRef.setValue(chatMessage)
+        val latesMessageToRef= FirebaseDatabase.getInstance().getReference("lates-message/$toId/$fromId")
+        latesMessageToRef.setValue(chatMessage)
     }
 
-    class ChatFromItem(val text: String, val user: User) : Item<ViewHolder>() {
-        override fun bind(viewHolder: ViewHolder, position: Int) {
-            viewHolder.itemView.textView_from_row.text = text
-
-            //Load our user image into the star
-            val uri = user.profileImageUrl
-            val targetImageview = viewHolder.itemView.image_chat_from_row
-            Picasso.get().load(uri).into(targetImageview)
-
-        }
-
-        override fun getLayout(): Int {
-            return R.layout.chat_from_row
-        }
-    }
-
-    class ChatToItem(val text: String, val user: User) : Item<ViewHolder>() {
-        override fun bind(viewHolder: ViewHolder, position: Int) {
-            viewHolder.itemView.textView_to_row.text = text
-
-            //Load our user image into the star
-            val uri = user.profileImageUrl
-            val targetImageview = viewHolder.itemView.image_chat_to_row
-            Picasso.get().load(uri).into(targetImageview)
-
-        }
-
-        override fun getLayout(): Int {
-            return R.layout.chat_to_row
-        }
-    }
 }
 
 
