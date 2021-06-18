@@ -21,7 +21,7 @@ class LatesMessageRow(val chatMessage: ChatMessage): Item<ViewHolder>()  {
 
         val chatPartnerId: String
         if (chatMessage.fromId == FirebaseAuth.getInstance().uid) {
-            chatPartnerId = chatMessage.toId.toString()
+            chatPartnerId = chatMessage.toId
         } else {
             chatPartnerId = chatMessage.fromId
         }

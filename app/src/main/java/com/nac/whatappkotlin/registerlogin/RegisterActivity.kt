@@ -95,8 +95,10 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun upLoadImageToFirebaseStorage() {
         if (selectedPhotoUri == null) return
+
         val filename = UUID.randomUUID().toString()
         val ref = FirebaseStorage.getInstance().getReference("/image/$filename")
+
         ref.putFile(selectedPhotoUri!!)
             .addOnSuccessListener {
                 Log.d(TAG, "Successfully upload image: ${it.metadata?.path}")
@@ -130,9 +132,4 @@ class RegisterActivity : AppCompatActivity() {
                 Log.d(TAG, "Failed to set value to database: ${it.message}")
             }
     }
-
-//    class User(val uid: String?, val username: String?, val profileImageUrl: String?) {
-//        constructor() : this("", "", "")
-//
-//    }
 }

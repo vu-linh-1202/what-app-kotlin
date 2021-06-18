@@ -25,7 +25,6 @@ class LatesMessageAct : AppCompatActivity() {
         val TAG = "LatestMessages"
     }
 
-    val adapter = GroupAdapter<ViewHolder>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lates_message)
@@ -89,6 +88,8 @@ class LatesMessageAct : AppCompatActivity() {
             }
         })
     }
+
+    val adapter = GroupAdapter<ViewHolder>()
 
     private fun fetchCurrentUser() {
 

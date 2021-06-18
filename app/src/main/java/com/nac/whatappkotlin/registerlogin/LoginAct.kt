@@ -2,6 +2,7 @@ package com.nac.whatappkotlin.registerlogin
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -33,6 +34,9 @@ class LoginAct : AppCompatActivity() {
         }
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
+                if(!it.isSuccessful) return@addOnCompleteListener
+                Log.d("Login", "Successfully logged in: ${it.result?.user?.uid}")
+
                 val intent = Intent(this, LatesMessageAct::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)

@@ -28,6 +28,7 @@ class ChatLogAct : AppCompatActivity() {
     }
 
     val adapter = GroupAdapter<ViewHolder>()
+
     var toUser: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +41,7 @@ class ChatLogAct : AppCompatActivity() {
         if (toUser != null) {
             supportActionBar?.title = toUser?.uid
         }
-//        setupDummyData()
+
         listenForMessage()
 
         btn_send.setOnClickListener {
@@ -50,8 +51,9 @@ class ChatLogAct : AppCompatActivity() {
     }
 
     private fun listenForMessage() {
-
-        val ref = FirebaseDatabase.getInstance().getReference("messages")
+        val fromId = FirebaseAuth.getInstance().uid
+        val toId = toUser?.uid
+        val ref = FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/$toId")
 
         ref.addChildEventListener(object : ChildEventListener {
 
@@ -63,7 +65,7 @@ class ChatLogAct : AppCompatActivity() {
 
                     if (chatMessage.fromId == FirebaseAuth.getInstance().uid) {
                         val currentUser= LatesMessageAct.currentUser?:return
-                        adapter.add(ChatFromItem(chatMessage.text, currentUser!!))
+                        adapter.add(ChatFromItem(chatMessage.text, currentUser))
                     } else {
                         adapter.add(ChatToItem(chatMessage.text, toUser!!))
                     }
@@ -89,13 +91,11 @@ class ChatLogAct : AppCompatActivity() {
     private fun performSendMessage() {
         //how to we actually send a message to firebase
         val text = editText_chat_log.text.toString()
-        //val refer = FirebaseDatabase.getInstance().getReference("/messages").push()
         val fromId = FirebaseAuth.getInstance().uid
         val user = intent.getParcelableExtra<User>(NewMessageAct.USER_KEY)
         val toId = user?.uid
 
         if (fromId == null) return
-
         val toReference = FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").push()
         val refer = FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/${toId}")
         val chatMessage = ChatMessage(refer.key!!, text, fromId, toId, System.currentTimeMillis() / 1000
