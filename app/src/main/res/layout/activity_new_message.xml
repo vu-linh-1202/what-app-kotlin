@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/teal_700"
-    tools:context=".NewMessageAct">
+    tools:context=".message.NewMessageAct">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_message"

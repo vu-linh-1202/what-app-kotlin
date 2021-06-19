@@ -28,7 +28,7 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        btn_signIn.setOnClickListener {
+        btn_register.setOnClickListener {
             performRegister()
         }
         tv_already_account.setOnClickListener {
@@ -60,8 +60,6 @@ class RegisterActivity : AppCompatActivity() {
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
             circleImageView.setImageBitmap(bitmap)
             btn_select_photo.alpha = 0f
-//            val bitmapDrawable = BitmapDrawable(bitmap)
-//            btn_select_photo.setBackgroundDrawable(bitmapDrawable)
         }
     }
 
@@ -97,7 +95,7 @@ class RegisterActivity : AppCompatActivity() {
         if (selectedPhotoUri == null) return
 
         val filename = UUID.randomUUID().toString()
-        val ref = FirebaseStorage.getInstance().getReference("/image/$filename")
+        val ref = FirebaseStorage.getInstance().getReference("/images/$filename")
 
         ref.putFile(selectedPhotoUri!!)
             .addOnSuccessListener {
@@ -117,7 +115,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun saveUserToFirebaseDatabase(profileImageUrl: String) {
         val uid = FirebaseAuth.getInstance().uid ?: ""
-        val ref = FirebaseDatabase.getInstance().getReference("/user/$uid")
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
 
         val users = User(uid, edt_name.text.toString(), profileImageUrl)
         ref.setValue(users)

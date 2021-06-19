@@ -42,10 +42,12 @@ class LatesMessageAct : AppCompatActivity() {
             Log.d(TAG, "123")
             val intent = Intent(this, ChatLogAct::class.java)
 
+            // we are missing the chat partner user
             val row = item as LatesMessageRow
             intent.putExtra(NewMessageAct.USER_KEY, row.chatPartnerUser)
             startActivity(intent)
         }
+
         listenForLatestMessages()
         fetchCurrentUser()
         verifyUserIsLogin()
@@ -92,7 +94,6 @@ class LatesMessageAct : AppCompatActivity() {
     val adapter = GroupAdapter<ViewHolder>()
 
     private fun fetchCurrentUser() {
-
         val uid = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {

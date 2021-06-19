@@ -30,7 +30,7 @@ class NewMessageAct : AppCompatActivity() {
        val USER_KEY= "USER_KEY"
    }
     private fun fetchUsers() {
-        val ref = FirebaseDatabase.getInstance().getReference("/user")
+        val ref = FirebaseDatabase.getInstance().getReference("/users")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
 
             override fun onDataChange(p0: DataSnapshot) {
@@ -55,7 +55,7 @@ class NewMessageAct : AppCompatActivity() {
             }
 
             override fun onCancelled(p0: DatabaseError) {
-                TODO("Not yet implemented")
+
             }
         })
     }

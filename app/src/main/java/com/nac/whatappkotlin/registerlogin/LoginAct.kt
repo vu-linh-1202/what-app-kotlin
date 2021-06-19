@@ -7,8 +7,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.nac.whatappkotlin.R
-import com.nac.whatappkotlin.message.LatesMessageAct
 import kotlinx.android.synthetic.main.activity_login.*
+import com.nac.whatappkotlin.message.LatesMessageAct as LatesMessageAct1
 
 class LoginAct : AppCompatActivity() {
 
@@ -32,13 +32,14 @@ class LoginAct : AppCompatActivity() {
             Toast.makeText(this, "Please fill out email/password.", Toast.LENGTH_SHORT).show()
             return
         }
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if(!it.isSuccessful) return@addOnCompleteListener
+
                 Log.d("Login", "Successfully logged in: ${it.result?.user?.uid}")
 
-                val intent = Intent(this, LatesMessageAct::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                val intent = Intent(this, LatesMessageAct1::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }
             .addOnFailureListener {
